@@ -17,6 +17,7 @@ def coverJsonFile(buildVersion)
   data_hash = JSON.parse(file)
   ipaList = data_hash["data"]
   currentTime = Time.now.strftime("%d/%m/%Y %H:%M")
+  ipaList.delete_if{|x| x["build"].eql?("#{buildVersion}")}
   ipaList.insert(0, {"version" => "#{$version}.#{buildVersion}","build"=>"#{buildVersion}","date"=>"#{currentTime}"}) 
   data_hash["data"] = ipaList
   # puts data_hash
@@ -47,8 +48,9 @@ if File.exist?($releaseIPAPath)
   system "plistbuddy -c \"Set :items:0:assets:0:url https://app.fangcloud.com/ios/ios-build-#{$buildVersion}/CoolOffice.ipa\" \"#{$uploadFolderPath}/CoolOffice.plist\""
   
   FileUtils.copy_file($uploadIPAPlistPath, "#{uploadFolderWithVersion}/CoolOffice.plist")
-  system "tar -czf #{$uploadFolderPath}/ios_build.tar.gz #{uploadFolderWithVersion} #{$uploadFolderPath}/ios.json"
-  exec "scp #{$uploadFolderPath}/ios_build.tar.gz root@112.124.70.25:/usr/local/ios"
+  
+  system "cd #{$uploadFolderPath}; tar -czf ios_build.tar.gz ios-build-#{$buildVersion} ios.json"
+  exec "scp ios_build.tar.gz root@112.124.70.25:/usr/local/ios"
 else
   puts "ipa not exits in ReleaseFolder!"
 end
