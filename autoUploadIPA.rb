@@ -4,7 +4,7 @@ require 'fileutils'
 require 'shellwords'
 $version = "1.0.3"
 $appName = 'CoolOffice.app'#it's a folder
-$releaseIPAPath = "/Users/redhatimac/Documents/github\ clone/egeio\ project/ios/iOS\ projects/CoolOffice/Cooloffice/build/Products/InHouseRelease-iphoneos"
+$releaseIPAPath = "/Users/redhatimac/Library/Developer/Xcode/DerivedData/Build/Products/InHouseRelease-iphoneos/"
 $uploadFolderPath = "/Users/redhatimac/Desktop/uploadIpa"
 $uploadIPAPlistPath = "/Users/redhatimac/Desktop/uploadIpa/CoolOffice.plist"
 puts '输入你的版本号：'
@@ -34,7 +34,7 @@ if File.exist?($releaseIPAPath)
   end
 
   FileUtils.copy_entry("#{$releaseIPAPath}/#{$appName}", "#{$releaseIPAPath}/Payload/#{$appName}")
-  system "zip -r #{$releaseIPAPath.shellescape}/CoolOffice.ipa #{$releaseIPAPath.shellescape}/Payload/"
+  system "cd #{$releaseIPAPath.shellescape}; zip -r CoolOffice.ipa Payload/"
 
   uploadFolderWithVersion = "#{$uploadFolderPath}/ios-build-#{$buildVersion}"
   if !File.exists?(uploadFolderWithVersion)
@@ -50,7 +50,7 @@ if File.exist?($releaseIPAPath)
   FileUtils.copy_file($uploadIPAPlistPath, "#{uploadFolderWithVersion}/CoolOffice.plist")
   
   system "cd #{$uploadFolderPath}; tar -czf ios_build.tar.gz ios-build-#{$buildVersion} ios.json"
-  exec "scp ios_build.tar.gz root@112.124.70.25:/usr/local/ios"
+  exec "scp #{$uploadFolderPath}/ios_build.tar.gz root@112.124.70.25:/usr/local/ios"
 else
   puts "ipa not exits in ReleaseFolder!"
 end
