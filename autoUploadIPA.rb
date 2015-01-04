@@ -2,12 +2,13 @@
 require 'json'
 require 'fileutils'
 require 'shellwords'
-$version = "1.0.3"
 $appName = 'CoolOffice.app'#it's a folder
 $releaseIPAPath = "/Users/redhatimac/Library/Developer/Xcode/DerivedData/Build/Products/InHouseRelease-iphoneos/"
 $uploadFolderPath = "/Users/redhatimac/Desktop/uploadIpa"
 $uploadIPAPlistPath = "/Users/redhatimac/Desktop/uploadIpa/CoolOffice.plist"
-puts '输入你的版本号：'
+puts '输入你的version号：'
+$version = gets.chomp
+puts '输入你的build号：'
 $buildVersion = gets.chomp
 
 def coverJsonFile(buildVersion)
